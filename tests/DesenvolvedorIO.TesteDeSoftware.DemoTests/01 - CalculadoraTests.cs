@@ -6,7 +6,7 @@ namespace DesenvolvedorIO.TesteDeSoftware.DemoTests
     public class CalculadoraTests
     {
         [Fact]
-        public void Calculadora_Somar_RetonarValorSoma()
+        public void Calculadora_Somar_RetornarValorSoma()
         {
             // Arrange
             var calculadora = new Calculadora();
@@ -19,13 +19,15 @@ namespace DesenvolvedorIO.TesteDeSoftware.DemoTests
         }
 
         [Theory]
+        [InlineData(1,1,2)]
         [InlineData(2, 2, 4)]
-        [InlineData(2, 7, 9)]
-        [InlineData(12, 4, 16)]
-        [InlineData(25, 27, 52)]
+        [InlineData(4, 2, 6)]
+        [InlineData(7, 3, 10)]
+        [InlineData(6, 6, 12)]
+        [InlineData(9, 9, 18)]
         public void Calculadora_Somar_RetornarValoresSomaCorretos(double v1, double v2, double total)
         {
-            // Arange
+            // Arrange
             var calculadora = new Calculadora();
 
             // Act
