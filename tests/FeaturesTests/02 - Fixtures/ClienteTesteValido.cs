@@ -1,6 +1,6 @@
 ﻿using Xunit;
 
-namespace Features.Tests
+namespace Features.Tests._02___Fixtures
 {
     [Collection(nameof(ClienteCollection))]
     public class ClienteTesteValido
@@ -11,7 +11,6 @@ namespace Features.Tests
         {
             _clienteTestsFixture = clienteTestsFixture;
         }
-        
 
         [Fact(DisplayName = "Novo Cliente Válido")]
         [Trait("Categoria", "Cliente Fixture Testes")]
@@ -23,7 +22,7 @@ namespace Features.Tests
             // Act
             var result = cliente.EhValido();
 
-            // Assert 
+            // Assert
             Assert.True(result);
             Assert.Equal(0, cliente.ValidationResult.Errors.Count);
         }

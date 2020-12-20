@@ -1,37 +1,32 @@
-﻿using System;
-using Features.Clientes;
-using Xunit;
+﻿using Features.Clientes;
+using System;
 
-namespace Features.Tests
+namespace Features.Tests._02___Fixtures
 {
-    [CollectionDefinition(nameof(ClienteCollection))]
-    public class ClienteCollection : ICollectionFixture<ClienteTestsFixture>
-    {}
-
     public class ClienteTestsFixture : IDisposable
     {
         public Cliente GerarClienteValido()
         {
             var cliente = new Cliente(
                 Guid.NewGuid(),
-                "Eduardo",
-                "Pires",
-                DateTime.Now.AddYears(-30),
-                "edu@edu.com",
+                "Renato",
+                "Francisco",
+                DateTime.Now.AddYears(-50),
+                "renato@gmail.com",
                 true,
                 DateTime.Now);
 
             return cliente;
         }
 
-        public Cliente GerarClienteInValido()
+        public Cliente GerarClienteInvalido()
         {
             var cliente = new Cliente(
                 Guid.NewGuid(),
                 "",
                 "",
                 DateTime.Now,
-                "edu2edu.com",
+                "renato@gmail.com",
                 true,
                 DateTime.Now);
 
