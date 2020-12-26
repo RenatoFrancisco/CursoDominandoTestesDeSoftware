@@ -19,5 +19,9 @@ namespace NerdStore.Vendas.Domain
             Quantidade = quantidade;
             ValorUnitario = valorUnitario;
         }
+
+        internal void AdicionarUnidades(int quantidade) => Quantidade += quantidade;
+
+        internal decimal CalcularValor() => Quantidade * ValorUnitario;
     }
 }
