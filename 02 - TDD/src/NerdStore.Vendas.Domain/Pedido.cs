@@ -17,7 +17,6 @@ namespace NerdStore.Vendas.Domain
         private readonly List<PedidoItem> _pedidoItens;
         public IReadOnlyCollection<PedidoItem> PedidoItens => _pedidoItens;
 
-
         protected Pedido()
         {
             _pedidoItens = new List<PedidoItem>();
@@ -37,6 +36,19 @@ namespace NerdStore.Vendas.Domain
             }
 
             _pedidoItens.Add(pedidoItem);
+            CalcularValorPedido();
+        }
+
+        public void AtualizarItem(PedidoItem pedidoItem)
+        {
+            ValidarPedidoItemInexistente(pedidoItem);
+            ValidarQuantidadeItemPermitida(pedidoItem);
+
+            var itemExistente = _pedidoItens.FirstOrDefault(p => p.ProdutoId == pedidoItem.ProdutoId);
+
+            _pedidoItens.Remove(itemExistente);
+            _pedidoItens.Add(pedidoItem);
+
             CalcularValorPedido();
         }
 
@@ -70,6 +82,12 @@ namespace NerdStore.Vendas.Domain
         }
 
         private bool PedidoItemExistente(PedidoItem item) => _pedidoItens.Any(p => p.ProdutoId == item.ProdutoId);
+
+        private void ValidarPedidoItemInexistente(PedidoItem item)
+        {
+            if (!PedidoItemExistente(item))
+                throw new DomainException("O item não pertence ao pedido.");
+        }
 
         private void CalcularValorPedido() => ValorTotal = _pedidoItens.Sum(pi => pi.CalcularValor());
     }
