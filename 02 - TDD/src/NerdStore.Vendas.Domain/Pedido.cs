@@ -97,13 +97,16 @@ namespace NerdStore.Vendas.Domain
             if (!VoucherUtilizado) return;
 
             var desconto = 0m;
+            var valor = ValorTotal;
+
             if (Voucher.TipoDescontoVoucher == TipoDescontoVoucher.Valor)
                 desconto = Voucher?.ValorDesconto ?? 0m;
             else
                 if (Voucher.PercentualDesconto.HasValue)
                     desconto = (ValorTotal * Voucher.PercentualDesconto.Value) / 100;
 
-            ValorTotal -= desconto;
+            valor -= desconto;
+            ValorTotal = valor < 0 ? 0 : valor; 
             Desconto = desconto;
         }
 
@@ -128,6 +131,10 @@ namespace NerdStore.Vendas.Domain
                 throw new DomainException("O item não pertence ao pedido.");
         }
 
-        private void CalcularValorPedido() => ValorTotal = _pedidoItens.Sum(pi => pi.CalcularValor());
+        private void CalcularValorPedido() 
+        {
+            ValorTotal = _pedidoItens.Sum(pi => pi.CalcularValor());
+            CalcularValorTotalDesconto();
+        } 
     }
 }
