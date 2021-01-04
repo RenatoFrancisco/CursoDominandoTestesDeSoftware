@@ -1,4 +1,5 @@
-﻿using NerdStore.Core.DomainObjects;
+﻿using FluentValidation.Results;
+using NerdStore.Core.DomainObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,9 @@ namespace NerdStore.Vendas.Domain
         public Guid ClienteId { get; private set; }
         public decimal ValorTotal { get; private set; }
         public PedidoStatus PedidoStatus { get; set; }
+        public bool VoucherUtilizado { get; private set; }
+        public Voucher Voucher { get; private set; }
+        public decimal Desconto { get; private set; }
 
         private readonly List<PedidoItem> _pedidoItens;
         public IReadOnlyCollection<PedidoItem> PedidoItens => _pedidoItens;
@@ -60,6 +64,18 @@ namespace NerdStore.Vendas.Domain
             CalcularValorPedido();
         }
 
+        public ValidationResult AplicarVoucher(Voucher voucher)
+        {
+            var result = voucher.ValidarSeAplicavel();
+            if (!result.IsValid) return result;
+
+            Voucher = voucher;
+            VoucherUtilizado = true;
+            CalcularValorTotalDesconto();
+
+            return result;
+        }
+
         public void TornarRascunho() => PedidoStatus = PedidoStatus.Rascunho;
 
         public static class PedidoFactory
@@ -76,6 +92,21 @@ namespace NerdStore.Vendas.Domain
             }
         }
 
+        private void CalcularValorTotalDesconto()
+        {
+            if (!VoucherUtilizado) return;
+
+            var desconto = 0m;
+            if (Voucher.TipoDescontoVoucher == TipoDescontoVoucher.Valor)
+                desconto = Voucher?.ValorDesconto ?? 0m;
+            else
+                if (Voucher.PercentualDesconto.HasValue)
+                    desconto = (ValorTotal * Voucher.PercentualDesconto.Value) / 100;
+
+            ValorTotal -= desconto;
+            Desconto = desconto;
+        }
+
         private void ValidarQuantidadeItemPermitida(PedidoItem item)
         {
             var quantidadeItens = item.Quantidade;
@@ -85,7 +116,7 @@ namespace NerdStore.Vendas.Domain
                 quantidadeItens += itemExistente.Quantidade;
             }
 
-            if (quantidadeItens >  MAX_UNIDADE_ITEM)
+            if (quantidadeItens > MAX_UNIDADE_ITEM)
                 throw new DomainException($"Máximo de {MAX_UNIDADE_ITEM} unidades por produto.");
         }
 
