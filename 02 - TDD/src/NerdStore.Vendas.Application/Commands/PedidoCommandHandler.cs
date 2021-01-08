@@ -42,7 +42,7 @@ namespace NerdStore.Vendas.Application.Commands
 
                 if (pedidoItemExistente)
                 {
-                    _pedidoRepository.AtualizarItem(pedido.PedidoItems.FirstOrDefault(p => p.ProdutoId == pedidoItem.ProdutoId));
+                    _pedidoRepository.AtualizarItem(pedido.PedidoItens.FirstOrDefault(p => p.ProdutoId == pedidoItem.ProdutoId));
                 }
                 else
                 {

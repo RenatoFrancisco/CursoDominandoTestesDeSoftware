@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace NerdStore.Vendas.Domain
 {
-    public class Pedido
+    public class Pedido : Entity, IAggregateRoot
     {
         public static int MAX_UNIDADES_ITEM = 15;
         public static int MIN_UNIDADES_ITEM = 1;
@@ -63,6 +63,8 @@ namespace NerdStore.Vendas.Domain
             _pedidoItens.Remove(item);
             CalcularValorPedido();
         }
+
+        public bool PedidoItemExistente(PedidoItem item) => _pedidoItens.Any(p => p.ProdutoId == item.ProdutoId);
 
         public ValidationResult AplicarVoucher(Voucher voucher)
         {
@@ -123,7 +125,6 @@ namespace NerdStore.Vendas.Domain
                 throw new DomainException($"Máximo de {MAX_UNIDADES_ITEM} unidades por produto.");
         }
 
-        private bool PedidoItemExistente(PedidoItem item) => _pedidoItens.Any(p => p.ProdutoId == item.ProdutoId);
 
         private void ValidarPedidoItemInexistente(PedidoItem item)
         {
